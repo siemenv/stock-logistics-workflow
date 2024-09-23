@@ -3,7 +3,7 @@
 # Copyright 2017 Serpent Consulting Services Pvt. Ltd.
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-from odoo.tests import common
+from odoo.tests import Form, common
 
 
 class TestStockMove(common.TransactionCase):
@@ -87,6 +87,10 @@ class TestStockMove(common.TransactionCase):
             self.picking.move_ids[2].sequence,
             "The Sequence is not copied properly",
         )
+        picking_form = Form(self.picking)
+        with picking_form.move_ids_without_package.new() as move_form:
+            move_form.product_id = self.product_id_1
+            self.assertEqual(move_form.sequence, self.picking.max_line_sequence)
 
     def test_backorder(self):
         picking = self._create_picking()
